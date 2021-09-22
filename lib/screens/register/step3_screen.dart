@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_koddev/api/rest_api.dart';
 import 'package:chat_koddev/app_localizations.dart';
 import 'package:chat_koddev/helper/colors.dart';
@@ -22,11 +24,19 @@ class _Step3ScreenState extends State<Step3Screen> {
 
   UsernameState _usernameState = UsernameState.START;
 
+  Timer timer;
+
   nextScreen() {
     widget.user['username'] = usernameController.text;
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Step4Screen(widget.user)
     ));
+  }
+
+  @override
+  void dispose() {
+    if(timer != null) timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -116,7 +126,13 @@ class _Step3ScreenState extends State<Step3Screen> {
         FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
       ],
       onChanged: (value) {
-        _checkUsername();
+        if(timer != null) timer.cancel();
+        setState(() {
+          _usernameState = UsernameState.LOADING;
+        });
+        timer = Timer(Duration(milliseconds: 1500), () {
+          _checkUsername();
+        });
       },
     );
   }
@@ -153,15 +169,13 @@ class _Step3ScreenState extends State<Step3Screen> {
   }
 
   _checkUsername() async {
-    setState(() {
-      _usernameState = UsernameState.LOADING;
-    });
     Map<String, String> params = <String, String>{
       "username": usernameController.text
     };
     await RestApi().checkUsername(
       params,
       onResponse: (response) {
+        print(response['message']);
         setState(() {
           _usernameState = UsernameState.AVAILABLE;
         });

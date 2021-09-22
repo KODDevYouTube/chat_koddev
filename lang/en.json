@@ -22,6 +22,11 @@
   "when_your_birthday": "When's your birthday?",
   "birthday": "Birthday",
   "pick_username": "Pick a username",
+  "set_password": "Set a password",
   "username_available": "Username available",
-  "username_unavailable": "Username unavailable"
+  "username_unavailable": "Username unavailable",
+  "password_length": "Your password should be at least 6 characters",
+  "whats_your_email": "What's your email address?",
+  "optional": "Optional",
+  "register_successfully": "Register successfully"
 }

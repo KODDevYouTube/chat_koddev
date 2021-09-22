@@ -14,6 +14,6 @@ const MATERIAL_COLOR = MaterialColor(0xff585858, {
 });
 
 const COLOR_MAIN = Color(0xff585858);
-const COLOR_YELLOW = Color(0xfffddf62);
+const COLOR_YELLOW = Color(0xfff1d149);//0xfffddf62
 const COLOR_CYAN = Color(0xfffaededd);
 const COLOR_TEXT_LIGHT = Color(0xffa7a7a7);

@@ -26,6 +26,10 @@ class RestApi {
     await _makePostRequest(true, '${Api.HOST}/auth/check-username', params, onResponse, onError);
   }
 
+  me({onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/auth/me', onResponse, onError);
+  }
+
   _makePostRequest(contentType, url, params, onResponse, onError) async {
     var res = await http.post(
       Uri.parse(url),

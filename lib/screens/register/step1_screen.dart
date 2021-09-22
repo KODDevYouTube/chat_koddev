@@ -18,40 +18,10 @@ class _RegisterScreenState extends State<Step1Screen> {
   final _validateFirstName = GlobalKey<FormFieldState>();
   final _validateLastName = GlobalKey<FormFieldState>();
 
-  /*register() async {
-    appProgressDialog.show();
-
-    Map<String, String> params = <String, String>{
-      "fullname": fullnameController.text,
-      "username": usernameController.text,
-      "email": emailController.text,
-      "password": passwordController.text
-    };
-
-    await RestApi().register(params,
-      onResponse: (response) async {
-        await AppSession().addSessions(
-            uid: response['user']['id'],
-            token: response['data']['access_token'],
-            login: 'true',
-            expiresAt: response['data']['expires_in']
-        );
-        appProgressDialog.hide();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()
-        ));
-      },
-      onError: (error) async {
-        appProgressDialog.hide();
-        GetMessage.snackbarError(error.toString());
-      }
-    );
-  }*/
-
   nextScreen() {
     Map<String, String> user = <String, String>{
-      "firstname": "",
-      "lastname": ""
+      "firstname": firstNameController.text,
+      "lastname": lastNameController.text
     };
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Step2Screen(user)
@@ -155,30 +125,20 @@ class _RegisterScreenState extends State<Step1Screen> {
               _validateFirstName.currentState.validate();
             },
             validator: (value) {
-              if(value.length < 3) {
+              if(value.length < 2) {
                 return AppLocalizations.of(context).translate('enter_correct_field');
               }
               return null;
             },
           ),
           SizedBox(height: 20),
-          TextFormField(
-            key: _validateLastName,
+          TextField(
             controller: lastNameController,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).translate('last_name'),
+              labelText: '${AppLocalizations.of(context).translate('last_name')} (${AppLocalizations.of(context).translate('optional')})',
             ),
             keyboardType: TextInputType.text,
-            onChanged: (value) {
-              _validateLastName.currentState.validate();
-            },
-            validator: (value) {
-              if(value.length < 3) {
-                return AppLocalizations.of(context).translate('enter_correct_field');
-              }
-              return null;
-            },
           ),
         ],
       ),
