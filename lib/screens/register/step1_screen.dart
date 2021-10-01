@@ -116,6 +116,7 @@ class _RegisterScreenState extends State<Step1Screen> {
           TextFormField(
             key: _validateFirstName,
             controller: firstNameController,
+            textCapitalization: TextCapitalization.sentences,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).translate('first_name'),
@@ -134,6 +135,7 @@ class _RegisterScreenState extends State<Step1Screen> {
           SizedBox(height: 20),
           TextField(
             controller: lastNameController,
+            textCapitalization: TextCapitalization.sentences,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
               labelText: '${AppLocalizations.of(context).translate('last_name')} (${AppLocalizations.of(context).translate('optional')})',

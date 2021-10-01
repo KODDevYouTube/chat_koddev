@@ -1,5 +1,5 @@
+import 'package:chat_koddev/api/app_api.dart';
 import 'package:chat_koddev/api/rest_api.dart';
-import 'package:chat_koddev/controllers/button_controller.dart';
 import 'package:chat_koddev/helper/app_progress_dialog.dart';
 import 'package:chat_koddev/helper/app_session.dart';
 import 'package:chat_koddev/helper/colors.dart';
@@ -27,22 +27,19 @@ class _LoginScreenState extends State<LoginScreen> {
   login() async {
     appProgressDialog.show();
 
+    String emailUser = emailController.text.trim();
+
     Map<String, String> params = <String, String>{
-      if(GetUtils.isEmail(emailController.text))
-        "email": emailController.text,
-      if(!GetUtils.isEmail(emailController.text))
-        "username": emailController.text,
+      if(GetUtils.isEmail(emailUser))
+        "email": emailUser,
+      if(!GetUtils.isEmail(emailUser))
+        "username": emailUser,
       "password": passwordController.text
     };
 
     await RestApi().login(params,
         onResponse: (response) async {
-          await AppSession().addSessions(
-            uid: response['user']['id'],
-            token: response['data']['access_token'],
-            login: 'true',
-            expiresAt: response['data']['expires_in']
-          );
+          await AppApi().login(response);
           appProgressDialog.hide();
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomeScreen()
@@ -83,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context).translate('username_email'),
                   ),
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 20),
                 TextField(
@@ -133,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 ChatButton(
+                  elevation: 100.0,
                   color: Colors.white,
                   child: Center(
                     child: Text(AppLocalizations.of(context).translate('sign_up'),

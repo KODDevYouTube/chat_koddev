@@ -1,3 +1,4 @@
+
 class User {
 
   final String id;
@@ -18,7 +19,7 @@ class User {
     this.email,
     this.email_verified,
     this.birthday
-  });
+});
 
   String get fullName {
     return '$firstName '
@@ -36,5 +37,17 @@ class User {
         email = json['email'],
         email_verified = json['email_verified'] == 0 ? false : true,
         birthday = json['birthday'];
+
+  Map<String, dynamic> toJson() =>
+      {
+        'id': id,
+        'firstname': firstName,
+        'lastname': lastName,
+        'username': username,
+        'image': image,
+        'email': email,
+        'email_verified': email_verified ? 1 : 0,
+        'birthday': birthday,
+      };
 
 }

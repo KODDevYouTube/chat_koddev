@@ -30,6 +30,18 @@ class RestApi {
     await _makeGetRequest('${Api.HOST}/auth/me', onResponse, onError);
   }
 
+  refreshToken({onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/auth/refresh', onResponse, onError);
+  }
+
+  chats({onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/private/chats', onResponse, onError);
+  }
+
+  friends({onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/private/friends', onResponse, onError);
+  }
+
   _makePostRequest(contentType, url, params, onResponse, onError) async {
     var res = await http.post(
       Uri.parse(url),

@@ -1,15 +1,29 @@
+import 'package:chat_koddev/api/app_api.dart';
 import 'package:chat_koddev/app_localizations.dart';
+import 'package:chat_koddev/controllers/chat_controller.dart';
+import 'package:chat_koddev/controllers/friend_controller.dart';
+import 'package:chat_koddev/controllers/user_controller.dart';
 import 'package:chat_koddev/helper/app_session.dart';
 import 'package:chat_koddev/screens/home_screen.dart';
 import 'package:chat_koddev/screens/login_screen.dart';
+import 'package:chat_koddev/widgets/session_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'helper/colors.dart';
 
-void main() {
+void main() async {
+
+  //init Hive
+  await Hive.initFlutter();
+  var dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+
   runApp(MyApp());
 }
 
@@ -52,6 +66,11 @@ class MyApp extends StatelessWidget {
         }
         return supportedLocales.first;
       },
+      initialBinding: BindingsBuilder(() {
+        Get.put(UserController());
+        Get.put(ChatController());
+        Get.put(FriendController());
+      }),
       home: LaunchScreen(),
     );
   }
@@ -95,4 +114,5 @@ class _LaunchScreenState extends State<LaunchScreen> {
       )
     );
   }
+
 }

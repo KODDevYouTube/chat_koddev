@@ -27,7 +27,7 @@ class _Step3ScreenState extends State<Step3Screen> {
   Timer timer;
 
   nextScreen() {
-    widget.user['username'] = usernameController.text;
+    widget.user['username'] = usernameController.text.toLowerCase();
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Step4Screen(widget.user)
     ));
@@ -118,6 +118,7 @@ class _Step3ScreenState extends State<Step3Screen> {
       controller: usernameController,
       maxLength: 20,
       textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.none,
       decoration: InputDecoration(
         labelText: AppLocalizations.of(context).translate('username'),
       ),

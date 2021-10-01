@@ -1,3 +1,4 @@
+import 'package:chat_koddev/api/app_api.dart';
 import 'package:chat_koddev/api/rest_api.dart';
 import 'package:chat_koddev/app_localizations.dart';
 import 'package:chat_koddev/helper/app_progress_dialog.dart';
@@ -33,12 +34,7 @@ class _Step5ScreenState extends State<Step5Screen> {
 
     await RestApi().register(widget.user,
         onResponse: (response) async {
-          await AppSession().addSessions(
-              uid: response['user']['id'],
-              token: response['data']['access_token'],
-              login: 'true',
-              expiresAt: response['data']['expires_in']
-          );
+          await AppApi().login(response);
           appProgressDialog.hide();
           Navigator.of(context).popUntil((route) => route.isFirst);
           Navigator.pushReplacement(

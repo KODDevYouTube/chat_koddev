@@ -1,23 +1,36 @@
 import 'package:chat_koddev/api/rest_api.dart';
-import 'package:chat_koddev/app_localizations.dart';
-import 'package:chat_koddev/helper/get_message.dart';
-import 'package:chat_koddev/models/User.dart';
+import '../models/user.dart';
 import 'package:get/state_manager.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class UserController extends GetxController{
 
-  var isLoading = true.obs;
   var user = User().obs;
+  var isLoading = true.obs;
 
-  fetchMe() async {
-    isLoading(true);
+  fetchUser() async {
+    //await AppApi(context).refreshToken();
     await RestApi().me(
-      onResponse: (response){
+      onResponse: (response) async {
         User u = User.fromJson(response['user']);
-        user.value = u;
+        await updateUser(u);
       }
     );
+  }
+
+  updateUser(u) async {
+    var box = await Hive.openBox('user');
+    await box.clear();
+    await box.add(u.toJson());
+    user.value = u;
+  }
+
+  getUser() async {
+    var box = await Hive.openBox('user');
+    var u = box.toMap()[0]?.cast<String, dynamic>() ?? null;
+    user.value = User.fromJson(u);
     isLoading(false);
+    await fetchUser();
   }
 
 }
