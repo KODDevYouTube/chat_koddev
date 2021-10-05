@@ -1,3 +1,4 @@
+import 'package:chat_koddev/api/app_socket.dart';
 import 'package:chat_koddev/controllers/friend_controller.dart';
 import 'package:chat_koddev/models/friend.dart';
 import 'package:chat_koddev/widgets/item/friend_item.dart';

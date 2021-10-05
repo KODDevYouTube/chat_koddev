@@ -35,5 +35,6 @@
   "session_expired": "Session Expired",
   "session_expired_content": "Your session has expired. You will have to log in again to start a new session",
   "ok": "OK",
-  "search_here": "Search here"
+  "search_here": "Search here",
+  "add": "Add"
 }

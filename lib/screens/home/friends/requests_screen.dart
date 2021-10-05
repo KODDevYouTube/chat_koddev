@@ -19,21 +19,26 @@ class _RequestsScreenState extends State<RequestsScreen> {
     super.initState();
   }
 
+  List<Friend> filterRequests(){
+    return friendController.friendList.where((element) =>
+      element.status == 'pending' && element.sender_id != element.user_id
+    ).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Obx(() =>
       !friendController.isLoading.value
           ? ListView.builder(
-        itemCount: friendController.friendList.length,
-        itemBuilder: (BuildContext context, int index){
-          Friend friend = friendController.friendList[index];
-          if(friend.status == 'pending') {
-            return FriendItem(friend);
-          }
-          return Container();
-        },
-      )
+              shrinkWrap: true,
+              itemCount: widget.createState().filterRequests().length,
+              itemBuilder: (BuildContext context, int index){
+                List<Friend> requests = widget.createState().filterRequests();
+                Friend friend = requests[index];
+                return FriendItem(friend, isRequest: true);
+              },
+            )
           : Center(child: CircularProgressIndicator()),
       ),
     );

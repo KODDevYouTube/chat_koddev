@@ -2,6 +2,7 @@ import 'package:chat_koddev/api/app_api.dart';
 import 'package:chat_koddev/app_localizations.dart';
 import 'package:chat_koddev/controllers/chat_controller.dart';
 import 'package:chat_koddev/controllers/friend_controller.dart';
+import 'package:chat_koddev/controllers/search_controller.dart';
 import 'package:chat_koddev/controllers/user_controller.dart';
 import 'package:chat_koddev/helper/app_session.dart';
 import 'package:chat_koddev/screens/home_screen.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
         Get.put(UserController());
         Get.put(ChatController());
         Get.put(FriendController());
+        Get.put(SearchController());
       }),
       home: LaunchScreen(),
     );

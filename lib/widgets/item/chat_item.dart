@@ -19,10 +19,10 @@ class ChatItem extends StatelessWidget {
 
     return Container(
       child: ListTile(
-        contentPadding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+        contentPadding: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
         leading: CircleImage(
-          width: 55,
-          height: 55,
+          width: 50,
+          height: 50,
           child: CachedNetworkImage(imageUrl: chat.r_image),
           borderWidth: 0,
         ),

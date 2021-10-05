@@ -1,11 +1,13 @@
+import 'package:chat_koddev/api/app_socket.dart';
 import 'package:chat_koddev/app_localizations.dart';
+import 'package:chat_koddev/controllers/friend_controller.dart';
 import 'package:chat_koddev/helper/colors.dart';
 import 'package:chat_koddev/screens/home/friends/online_screen.dart';
 import 'package:chat_koddev/screens/home/friends/requests_screen.dart';
 import 'package:chat_koddev/widgets/chat_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:get/get.dart';
 import 'package:badges/badges.dart';
 
 class FriendsScreen extends StatefulWidget {
@@ -16,7 +18,18 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> {
 
   int selectedIndex = 0;
-  int badge = 3;
+
+  FriendController friendController = Get.find();
+  AppSocket appSocket;
+
+  @override
+  void initState() {
+    appSocket = AppSocket();
+    appSocket.onFriends(() async {
+      await friendController.fetchFriends();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,24 +64,29 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         ),
                       ),
                       Tab(
-                        child: Badge(
-                          elevation: 0,
-                          animationType: BadgeAnimationType.scale,
-                          position: BadgePosition.topEnd(top: 2),
-                          badgeColor: Colors.red.shade300,
-                          badgeContent: Text(
-                            '',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12
-                            ),
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(AppLocalizations.of(context).translate('requests').toUpperCase()),
-                          ),
-                        ),
-                      ),
+                        child: Obx(() => RequestsScreen().createState().filterRequests().length > 0
+                              ? Badge(
+                              elevation: 0,
+                              animationType: BadgeAnimationType.scale,
+                              position: BadgePosition.topEnd(top: 2),
+                              badgeColor: Colors.red.shade300,
+                              badgeContent: Text(
+                                '',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12
+                                ),
+                              ),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(AppLocalizations.of(context).translate('requests').toUpperCase()),
+                              ),
+                            ) : Align(
+                              alignment: Alignment.center,
+                              child: Text(AppLocalizations.of(context).translate('requests').toUpperCase()),
+                          )
+                        )
+                      )
                     ]
                 ),
               ),

@@ -30,15 +30,24 @@ class AppSocket {
     return _instance;
   }
 
-
+  //User
   onUser(event) {
     socket.on(_Event.USER, (data) {
       event();
     });
   }
-
   emitUser(data) {
     socket.emit(_Event.USER, data);
+  }
+
+  //Friends
+  onFriends(event) {
+    socket.on(_Event.FRIENDS, (data) {
+      event();
+    });
+  }
+  emitFriends(data) {
+    socket.emit(_Event.FRIENDS, data);
   }
 
   dispose() {
@@ -50,5 +59,6 @@ class AppSocket {
 
 class _Event {
   static const USER = 'user';
+  static const FRIENDS = 'friends';
   static const ROOM = 'room';
 }

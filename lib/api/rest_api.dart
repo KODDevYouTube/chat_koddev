@@ -42,6 +42,22 @@ class RestApi {
     await _makeGetRequest('${Api.HOST}/private/friends', onResponse, onError);
   }
 
+  searchUsers(text, {onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/private/search/$text/users', onResponse, onError);
+  }
+
+  addFriend(params, {onResponse, onError}) async {
+    await _makePostRequest(true, '${Api.HOST}/private/friend/add', params, onResponse, onError);
+  }
+
+  acceptFriend(params, {onResponse, onError}) async {
+    await _makePostRequest(true, '${Api.HOST}/private/friend/accept', params, onResponse, onError);
+  }
+
+  dismissFriend(params, {onResponse, onError}) async {
+    await _makePostRequest(true, '${Api.HOST}/private/friend/dismiss', params, onResponse, onError);
+  }
+
   _makePostRequest(contentType, url, params, onResponse, onError) async {
     var res = await http.post(
       Uri.parse(url),
