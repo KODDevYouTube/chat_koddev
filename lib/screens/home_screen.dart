@@ -3,11 +3,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_koddev/api/app_api.dart';
 import 'package:chat_koddev/api/app_socket.dart';
 import 'package:chat_koddev/app_localizations.dart';
+import 'package:chat_koddev/controllers/chat_controller.dart';
+import 'package:chat_koddev/controllers/friend_controller.dart';
+import 'package:chat_koddev/controllers/request_controller.dart';
 import 'package:chat_koddev/controllers/user_controller.dart';
 import 'package:chat_koddev/helper/app_session.dart';
 import 'package:chat_koddev/helper/colors.dart';
 import 'package:chat_koddev/screens/home/add_friends_screen.dart';
-import 'package:chat_koddev/screens/home/messages_screen.dart';
+import 'package:chat_koddev/screens/home/chats_screen.dart';
 import 'package:chat_koddev/screens/home/friends_screen.dart';
 import 'package:chat_koddev/widgets/circle_image.dart';
 import 'package:chat_koddev/widgets/session_listener.dart';
@@ -23,6 +26,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   UserController userController = Get.find();
+  ChatController chatController = Get.find();
+  FriendController friendController = Get.find();
+  RequestController requestController = Get.find();
   AppSocket appSocket;
 
   int _selectedIndex = 0;
@@ -31,8 +37,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     userController.getUser();
     appSocket = AppSocket();
+    appSocket.joinMyRoom();
     appSocket.onUser(() async {
       await userController.fetchUser();
+    });
+    appSocket.onChats(() {
+      chatController.fetchChats();
+    });
+    appSocket.onFriends(() async {
+      await friendController.fetchFriends();
+    });
+    appSocket.onRequests(() async {
+      await requestController.fetchRequests();
     });
     super.initState();
   }
@@ -50,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Widget> _pages = <Widget>[
-    MessagesScreen(),
+    ChatsScreen(),
     FriendsScreen()
   ];
 
@@ -157,7 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 IconButton(
                   icon: Icon(CupertinoIcons.person_add, color: COLOR_MAIN),
                   onPressed: () {
-                    //TODO: Add friends
                     Navigator.push(
                         context, MaterialPageRoute(builder: (context) => AddFriendsScreen()
                     ));
@@ -169,10 +184,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icon(CupertinoIcons.bell, color: COLOR_MAIN),
                 onPressed: () async {
                   //TODO: Notifications
-                  //userController.fetchUser(context);
-                  Map<String, String> session = await AppSession().readSessions();
-                  String uid = session['uid'];
-                  appSocket.emitUser(uid);
                 },
               )
             ],

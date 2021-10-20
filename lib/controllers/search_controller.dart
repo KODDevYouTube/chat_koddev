@@ -25,4 +25,8 @@ class SearchController extends GetxController {
     );
     isLoading(false);
   }
+
+  clear(){
+    userList.clear();
+  }
 }

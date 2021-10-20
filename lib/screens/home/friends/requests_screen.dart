@@ -1,6 +1,10 @@
-import 'package:chat_koddev/controllers/friend_controller.dart';
+import 'package:chat_koddev/app_localizations.dart';
+import 'package:chat_koddev/controllers/request_controller.dart';
+import 'package:chat_koddev/helper/app_progress_dialog.dart';
+import 'package:chat_koddev/helper/colors.dart';
 import 'package:chat_koddev/models/friend.dart';
-import 'package:chat_koddev/widgets/item/friend_item.dart';
+import 'package:chat_koddev/models/request.dart';
+import 'package:chat_koddev/widgets/item/request_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,36 +15,63 @@ class RequestsScreen extends StatefulWidget {
 
 class _RequestsScreenState extends State<RequestsScreen> {
 
-  FriendController friendController = Get.find();
+  RequestController requestController = Get.find();
+  AppProgressDialog appProgressDialog;
 
   @override
   void initState() {
-    friendController.getFriends();
+    requestController.getRequests();
+    appProgressDialog = AppProgressDialog(context);
     super.initState();
-  }
-
-  List<Friend> filterRequests(){
-    return friendController.friendList.where((element) =>
-      element.status == 'pending' && element.sender_id != element.user_id
-    ).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Obx(() =>
-      !friendController.isLoading.value
-          ? ListView.builder(
+      !requestController.isLoading.value
+          ? requestController.requestList.length > 0
+            ? ListView.builder(
               shrinkWrap: true,
-              itemCount: widget.createState().filterRequests().length,
+              itemCount: requestController.requestList.length,
               itemBuilder: (BuildContext context, int index){
-                List<Friend> requests = widget.createState().filterRequests();
-                Friend friend = requests[index];
-                return FriendItem(friend, isRequest: true);
+                Request friend = requestController.requestList[index];
+                return RequestItem(friend, appProgressDialog);
               },
             )
+            : _emptyRequests()
           : Center(child: CircularProgressIndicator()),
       ),
     );
   }
+
+  Widget _emptyRequests(){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Opacity(
+            opacity: 0.5,
+            child: Container(
+              height: 100,
+              child: Image.asset('assets/images/emptyrequests.png'),
+            ),
+          ),
+          SizedBox(height: 30),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              AppLocalizations.of(context).translate('no_requests'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: COLOR_TEXT_LIGHT
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

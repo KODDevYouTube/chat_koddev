@@ -1,6 +1,7 @@
 import 'package:chat_koddev/api/app_socket.dart';
 import 'package:chat_koddev/app_localizations.dart';
 import 'package:chat_koddev/controllers/friend_controller.dart';
+import 'package:chat_koddev/controllers/request_controller.dart';
 import 'package:chat_koddev/helper/colors.dart';
 import 'package:chat_koddev/screens/home/friends/online_screen.dart';
 import 'package:chat_koddev/screens/home/friends/requests_screen.dart';
@@ -17,17 +18,11 @@ class FriendsScreen extends StatefulWidget {
 
 class _FriendsScreenState extends State<FriendsScreen> {
 
+  RequestController requestController = Get.find();
   int selectedIndex = 0;
-
-  FriendController friendController = Get.find();
-  AppSocket appSocket;
 
   @override
   void initState() {
-    appSocket = AppSocket();
-    appSocket.onFriends(() async {
-      await friendController.fetchFriends();
-    });
     super.initState();
   }
 
@@ -64,7 +59,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         ),
                       ),
                       Tab(
-                        child: Obx(() => RequestsScreen().createState().filterRequests().length > 0
+                        child: Obx(() => requestController.requestList.length > 0
                               ? Badge(
                               elevation: 0,
                               animationType: BadgeAnimationType.scale,

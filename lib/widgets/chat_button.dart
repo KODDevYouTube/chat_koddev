@@ -36,9 +36,13 @@ class ChatButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: Material(
           color: color,
-          child: InkWell(
+          child: onClick != null
+            ? InkWell(
+              child: _buttonContent(),
+              onTap: onClick,
+            )
+            : Container(
             child: _buttonContent(),
-            onTap: onClick,
           )
         ),
       ),

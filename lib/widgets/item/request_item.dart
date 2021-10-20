@@ -2,40 +2,67 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_koddev/api/app_socket.dart';
 import 'package:chat_koddev/api/rest_api.dart';
 import 'package:chat_koddev/app_localizations.dart';
+import 'package:chat_koddev/controllers/chat_controller.dart';
 import 'package:chat_koddev/controllers/friend_controller.dart';
-import 'package:chat_koddev/controllers/search_controller.dart';
+import 'package:chat_koddev/controllers/request_controller.dart';
 import 'package:chat_koddev/helper/app_progress_dialog.dart';
 import 'package:chat_koddev/helper/colors.dart';
 import 'package:chat_koddev/helper/get_message.dart';
-import 'package:chat_koddev/models/user.dart';
+import 'package:chat_koddev/models/friend.dart';
+import 'package:chat_koddev/models/request.dart';
+import 'package:chat_koddev/screens/home/message_screen.dart';
 import 'package:chat_koddev/widgets/circle_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class UserItem extends StatelessWidget {
+class RequestItem extends StatelessWidget {
 
-  SearchController searchController = Get.find();
-
-  final User user;
-  final String text;
+  final Request friend;
   final AppProgressDialog appProgressDialog;
+  FriendController friendController = Get.find();
+  RequestController requestController = Get.find();
+  ChatController chatController = Get.find();
   AppSocket appSocket;
-  bool visible = true;
 
-  UserItem(this.user, this.appProgressDialog, {this.text});
+  RequestItem(this.friend, this.appProgressDialog);
 
-  _addFriend() async {
+  _acceptFriend() async {
     appProgressDialog.show();
     Map<String, String> params = <String, String>{
-      "receiver_id": user.id
+      "friend_id": friend.friend_id
     };
 
-    await RestApi().addFriend(
+    await RestApi().acceptFriend(
         params,
         onResponse: (response) async {
-          await searchController.fetchUsers(text, false);
+          await requestController.fetchRequests();
+          await friendController.fetchFriends();
+          await chatController.fetchChats();
           appProgressDialog.hide();
-          appSocket.emitRequests(user.id);
+          appSocket.emitFriends(friend.sender_id);
+          appSocket.emitChats(friend.sender_id);
+        },
+        onError: (error) async {
+          appProgressDialog.hide();
+          GetMessage.snackbarError(error.toString());
+        }
+    );
+  }
+
+  _dismissFriend() async {
+    appProgressDialog.show();
+    Map<String, String> params = <String, String>{
+      "friend_id": friend.friend_id
+    };
+
+    await RestApi().dismissFriend(
+        params,
+        onResponse: (response) async {
+          await requestController.fetchRequests();
+          await friendController.fetchFriends();
+          appProgressDialog.hide();
+          appSocket.emitFriends(friend.sender_id);
         },
         onError: (error) async {
           appProgressDialog.hide();
@@ -53,17 +80,17 @@ class UserItem extends StatelessWidget {
         leading: CircleImage(
           width: 40,
           height: 40,
-          child: CachedNetworkImage(imageUrl: user.image),
+          child: CachedNetworkImage(imageUrl: friend.u_image),
           borderWidth: 0,
         ),
         title: Text(
-          user.fullName,
+          '${friend.u_firstname} ${friend.u_lastname ?? ''}',
           overflow: TextOverflow.fade,
           maxLines: 1,
           softWrap: false,
         ),
         subtitle: Text(
-          user.username,
+          friend.u_username,
           overflow: TextOverflow.fade,
           maxLines: 1,
           softWrap: false,
@@ -74,9 +101,9 @@ class UserItem extends StatelessWidget {
             RaisedButton.icon(
               icon: Icon(Icons.person_add, color: Colors.white, size: 20),
               label: Text(
-                AppLocalizations.of(context).translate('add'),
+                AppLocalizations.of(context).translate('accept'),
                 style: TextStyle(
-                    color: Colors.white
+                  color: Colors.white
                 ),
               ),
               elevation: 0,
@@ -85,13 +112,20 @@ class UserItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12), // <-- Radius
               ),
               onPressed: () async {
-                await _addFriend();
-              },
+                await _acceptFriend();
+              }
             ),
+            SizedBox(width: 5),
+            IconButton(
+              icon: Icon(CupertinoIcons.clear, color: COLOR_TEXT_LIGHT, size: 18),
+              onPressed: () async {
+                await _dismissFriend();
+              },
+            )
           ],
         ),
         onTap: () {
-
+          //profile
         },
       ),
     );

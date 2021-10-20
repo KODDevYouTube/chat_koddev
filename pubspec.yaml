@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   path_provider: ^2.0.1
   http: ^0.13.0
+  html: ^0.15.0
   progress_dialog: ^1.2.4
   flutter_secure_storage: ^4.1.0
   material_design_icons_flutter: ^4.0.5955
@@ -55,6 +56,9 @@ dependencies:
   timeago: ^3.1.0
   google_nav_bar: ^5.0.5
   badges: ^2.0.1
+  flutter_search_bar: ^3.0.0-dev.1
+  uuid: ^3.0.5
+  simple_url_preview: ^3.0.1
 
 dev_dependencies:
   flutter_test:

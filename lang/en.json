@@ -36,5 +36,15 @@
   "session_expired_content": "Your session has expired. You will have to log in again to start a new session",
   "ok": "OK",
   "search_here": "Search here",
-  "add": "Add"
+  "search": "Search",
+  "add": "Add",
+  "added_me": "Added Me",
+  "no_results": "No results",
+  "search_new_friends": "Search to add new Friends",
+  "no_messages_inbox": "No messages in your inbox, yet! Start Chatting with people now!",
+  "send_new_message": "Send new message",
+  "no_friends_yet": "No friends, yet! Start adding friends now!",
+  "no_requests": "No requests!",
+  "add_new_friend": "Add new friend",
+  "new_message": "New Message"
 }

@@ -38,6 +38,30 @@ class RestApi {
     await _makeGetRequest('${Api.HOST}/private/chats', onResponse, onError);
   }
 
+  messages(roomId, page, {onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/private/messages/room/$roomId/$page', onResponse, onError);
+  }
+
+  createFriendRoom(params, {onResponse, onError}) async {
+    await _makePostRequest(true, '${Api.HOST}/private/create/room/friend', params, onResponse, onError);
+  }
+
+  sendMessage(params, {onResponse, onError}) async {
+    await _makePostRequest(true, '${Api.HOST}/private/send/message', params, onResponse, onError);
+  }
+
+  messageById(params, {onResponse, onError}) async {
+    await _makePostRequest(true, '${Api.HOST}/private/room/message', params, onResponse, onError);
+  }
+
+  requests({onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/private/friend/requests', onResponse, onError);
+  }
+
+  participants(roomId, {onResponse, onError}) async {
+    await _makeGetRequest('${Api.HOST}/private/room/$roomId/participants', onResponse, onError);
+  }
+
   friends({onResponse, onError}) async {
     await _makeGetRequest('${Api.HOST}/private/friends', onResponse, onError);
   }

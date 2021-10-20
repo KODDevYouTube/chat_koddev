@@ -11,16 +11,15 @@ class AppSocket {
   AppSocket._() {
     socket = io(Api.SOCKET_SERVER, <String, dynamic>{
       'transports': ['websocket'],
-      'autoConnect': true,
+      //'autoConnect': true,
     });
     socket.onConnect((_) async {
-      Map<String, String> session = await AppSession().readSessions();
-      String uid = session['uid'];
-      socket.emit(_Event.ROOM, uid);
+      await joinMyRoom();
     });
     socket.onDisconnect((_) {
       //socket.emit('msg', 'test');
     });
+    socket.connect();
   }
 
   factory AppSocket() {
@@ -28,6 +27,28 @@ class AppSocket {
       _instance = new AppSocket._();
     }
     return _instance;
+  }
+
+  joinMyRoom() async {
+    Map<String, String> session = await AppSession().readSessions();
+    String uid = session['uid'];
+    print('room $uid');
+    joinRoom(uid);
+  }
+
+  //room
+  joinRoom(room){
+    socket.emit(_Event.ROOM, room);
+  }
+
+  //SubscribeChat
+  subscribeChat(data) {
+    socket.emit(_Event.SUBSCRIBECHAT, data);
+  }
+
+  //UnSubscribeChat
+  unSubscribeChat(data) {
+    socket.emit(_Event.UNSUBSCRIBECHAT, data);
   }
 
   //User
@@ -40,6 +61,16 @@ class AppSocket {
     socket.emit(_Event.USER, data);
   }
 
+  //Chats
+  onChats(event) {
+    socket.on(_Event.CHATS, (data) {
+      event();
+    });
+  }
+  emitChats(data) {
+    socket.emit(_Event.CHATS, data);
+  }
+
   //Friends
   onFriends(event) {
     socket.on(_Event.FRIENDS, (data) {
@@ -50,8 +81,30 @@ class AppSocket {
     socket.emit(_Event.FRIENDS, data);
   }
 
+  //Requests
+  onRequests(event) {
+    socket.on(_Event.REQUESTS, (data) {
+      event();
+    });
+  }
+  emitRequests(data) {
+    socket.emit(_Event.REQUESTS, data);
+  }
+
+  //Message
+  onMessage(event) {
+    socket.on(_Event.MESSAGE, (data) {
+      event(data);
+    });
+  }
+  emitMessage(data) {
+    socket.emit(_Event.MESSAGE, data);
+  }
+
   dispose() {
-    print("Socket dispose");
+    //socket.close();
+    _instance = null;
+    //socket.disconnect();
     socket.dispose();
   }
 
@@ -59,6 +112,11 @@ class AppSocket {
 
 class _Event {
   static const USER = 'user';
+  static const CHATS = 'chats';
   static const FRIENDS = 'friends';
+  static const REQUESTS = 'requests';
   static const ROOM = 'room';
+  static const SUBSCRIBECHAT = 'subscribechat';
+  static const UNSUBSCRIBECHAT = 'unsubscribechat';
+  static const MESSAGE = 'message';
 }
